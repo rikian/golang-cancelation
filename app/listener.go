@@ -4,7 +4,7 @@ import (
 	"go/cancel/app/config"
 	"go/cancel/app/middlewares"
 
-	// "go/cancel/app/repository/migrations"
+	"go/cancel/app/repository/migrations"
 	"log"
 	"net/http"
 	"os"
@@ -14,7 +14,7 @@ import (
 
 func ListenAndServe(address string) {
 	runDb()
-	// migrations.RunMigration(config.DB)
+	migrations.RunMigration(config.DB)
 	runServer(address)
 }
 
