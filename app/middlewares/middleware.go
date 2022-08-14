@@ -1,30 +1,37 @@
 package middlewares
 
 import (
-	"io"
-	"io/ioutil"
-	"log"
 	"net/http"
-	"time"
+
+	"go/cancel/app/router/delete"
+	"go/cancel/app/router/get"
+	"go/cancel/app/router/post"
+	"go/cancel/app/router/put"
 )
 
 func Middleware(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-	body, err := io.Copy(ioutil.Discard, r.Body)
-	if err != nil {
-		http.Error(w, "body not allowed", http.StatusBadRequest)
-		log.Print(body)
+	// check authorization
+	// http method GET
+	if r.Method == http.MethodGet {
+		get.Handler(w, r)
 		return
 	}
-	defer r.Body.Close()
 
-	// check auth etc
+	// http method POST
+	if r.Method == http.MethodPost {
+		post.Handler(w, r)
+		return
+	}
 
-	select {
-	case <-time.After(5 * time.Second):
-		w.Write([]byte("hello world"))
-		log.Print("send response succesfully...")
-	case <-ctx.Done():
-		log.Printf("%v Request success canceled ... ", r.Method)
+	// http method DELETE
+	if r.Method == http.MethodDelete {
+		delete.Handler(w, r)
+		return
+	}
+
+	// http method PUT
+	if r.Method == http.MethodPut {
+		put.Handler(w, r)
+		return
 	}
 }

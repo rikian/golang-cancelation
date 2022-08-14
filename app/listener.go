@@ -3,6 +3,8 @@ package app
 import (
 	"go/cancel/app/config"
 	"go/cancel/app/middlewares"
+
+	// "go/cancel/app/repository/migrations"
 	"log"
 	"net/http"
 	"os"
@@ -10,8 +12,9 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func Listener(address string) {
+func ListenAndServe(address string) {
 	runDb()
+	// migrations.RunMigration(config.DB)
 	runServer(address)
 }
 
@@ -34,7 +37,7 @@ func runDb() {
 
 func runServer(address string) {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) { middlewares.Middleware(w, r) })
+	mux.HandleFunc("/", middlewares.Middleware)
 
 	server := http.Server{
 		Addr:    address,
